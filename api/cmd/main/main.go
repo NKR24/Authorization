@@ -16,14 +16,14 @@ func main() {
 	ctx := context.Background()
 	rh := rejson.NewReJSONHandler()
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		DB:   0,
+		Addr: "localhost:6397",
+		DB:   1,
 	})
 
 	rh.SetGoRedisClientWithContext(ctx, rdb)
 
 	e := echo.New()
 	e.Use(middleware.CORS())
-
-	e.Logger.Fatal(e.Start(":5000"))
+	e.POST("/users", register)
+	e.Start(":5000")
 }
