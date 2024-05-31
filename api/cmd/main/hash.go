@@ -1,6 +1,12 @@
 package main
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/gomodule/redigo/redis"
+	"golang.org/x/crypto/bcrypt"
+)
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -9,5 +15,20 @@ func HashPassword(password string) (string, error) {
 
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+	if err == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+func GetUserHashPassword(email string) (string, error) {
+	key := fmt.Sprintf("Emails:%s", email)
+	userJSON, err := redis.Bytes(rh.JSONGet(key, "."))
+	if err != nil {
+		return "not found", err
+	}
+	user := new(UserCridentials)
+	json.Unmarshal(userJSON, &user)
+	return user.Password, err
 }

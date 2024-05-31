@@ -12,7 +12,6 @@ import (
 
 func main() {
 	fmt.Println("http://localhost:5000")
-
 	ctx := context.Background()
 	rh := rejson.NewReJSONHandler()
 	rdb := redis.NewClient(&redis.Options{
@@ -21,9 +20,9 @@ func main() {
 	})
 
 	rh.SetGoRedisClientWithContext(ctx, rdb)
-
 	e := echo.New()
 	e.Use(middleware.CORS())
-	e.POST("/users", register)
-	e.Start(":5000")
+	e.POST("/register", register)
+	e.POST("/login", login)
+	e.Start(":5001")
 }
