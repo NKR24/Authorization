@@ -114,7 +114,7 @@ func login(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "Password is wrong")
 	}
 
-	sessionToken := uuid.New().String()
+	sessionToken := uuid.New()
 	sessionTokenKey := fmt.Sprintf("SessionTokens:%s", sessionToken)
 	_, err = rh.JSONSet(sessionTokenKey, ".", user.ID)
 	if err != nil {
@@ -123,7 +123,7 @@ func login(c echo.Context) error {
 
 	c.SetCookie(&http.Cookie{
 		Name:     "session_token",
-		Value:    sessionToken,
+		Value:    sessionToken.String(),
 		HttpOnly: true,
 	})
 
